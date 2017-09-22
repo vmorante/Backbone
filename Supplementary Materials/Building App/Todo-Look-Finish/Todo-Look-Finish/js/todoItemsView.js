@@ -1,46 +1,51 @@
-
 var TodoItemsView = Backbone.View.extend({
-	id: "todoItemsContainer",
-	
-	initialize: function(options){
-		if (!(options && options.model))
-			throw new Error("model is not specified.");
 
-		this.model.on("add", this.onAddTodoItem, this);
-		this.model.on("remove", this.onRemoveTodoItem, this);
-	},
 
-	onRemoveTodoItem: function(todoItem){
-		this.$("li#" + todoItem.id).remove();
-	},
+    initialize: function(options) {
+        if (!(options && options.model))
+            throw new Error("model is not specified.");
 
-	onAddTodoItem: function(todoItem){
-		var view = new TodoItemView({ model: todoItem });
-		this.$("#todoItems").append(view.render().$el);
-	},
+        this.model.on("add", this.onAddTodoItem, this);
+        this.model.on("remove", this.onRemoveTodoItem, this);
+    },
 
-	events: {
-		"keypress #newTodoItem": "onKeyPress"
-	},
+    onRemoveTodoItem: function(todoItem) {
+        this.$("li#" + todoItem.id).remove();
+    },
 
-	onKeyPress: function(e){
-		if (e.keyCode == 13){
-			var $textBox = this.$("#newTodoItem");
+    onAddTodoItem: function(todoItem) {
+        var view = new TodoItemView({ model: todoItem });
+        this.$("todoItems").append(view.render().$el);
+    },
 
-			if ($textBox.val()){
-				var todoItem = new TodoItem({ title: $textBox.val() });
-				this.model.create(todoItem);
+    events: {
+        "click #add": "onClickAdd",
+        "keypress #newTodoItem": "onKeyPress"
+    },
 
-				$textBox.val("");
-			}	
-		}
-	},
+    onKeyPress: function(e) {
+        if (e.keyCode == 13)
+            this.onClickAdd();
+    },
 
-	render: function(){
-		var template = $("#todoItemsTemplate").html();
-		var html = Mustache.render(template);
-		this.$el.html(html);
+    onClickAdd: function() {
+        var $textBox = this.$("#newTodoItem");
 
-		return this;
-	}
+        if ($textBox.val()) {
+            var todoItem = new TodoItem({ title: $textBox.val() });
+            this.model.create(todoItem);
+
+            $textBox.val("");
+        }
+    },
+
+    render: function() {
+        var template = $("#todoItemsTemplate").html();
+        var html = Mustache.render(template);
+        this.$el.html(html);
+
+
+
+        return this;
+    }
 });
