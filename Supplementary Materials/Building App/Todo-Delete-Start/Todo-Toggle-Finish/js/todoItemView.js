@@ -1,29 +1,33 @@
-
 var TodoItemView = Backbone.View.extend({
-	tagName: "li",
-	
-	initialize: function(options){
-		if (!(options && options.model))
-			throw new Error("model is not specified.");
+    tagName: "li",
 
-		this.model.on("change", this.render, this);
-	},
+    initialize: function(options) {
+        if (!(options && options.model))
+            throw new Error("model is not specified.");
 
-	events: {
-		"click #toggle": "onClickToggle"
-	},
+        this.model.on("change", this.render, this);
+    },
 
-	onClickToggle: function(){
-		this.model.toggle();
-		console.log(this.model.toJSON());
-	},
+    events: {
+        "click #toggle": "onClickToggle",
+        "click #delete": "onClickDelete"
 
-	render: function(){
-		this.$el.toggleClass("completed", this.model.get("isCompleted"));
+    },
+    onClickDelete: function() {
+        this.model.destroy();
+    },
+    onClickToggle: function() {
+        this.model.toggle();
+        console.log(this.model.toJSON());
+    },
 
-		var checked = this.model.get("isCompleted") ? "checked" : "";
-		this.$el.html("<input id='toggle' type='checkbox'" + checked +"></input>" + this.model.escape("description"));
+    render: function() {
+        this.$el.attr("id", this.model.id);
+        this.$el.toggleClass("completed", this.model.get("isCompleted"));
 
-		return this;
-	}
+        var checked = this.model.get("isCompleted") ? "checked" : "";
+        this.$el.html("<input id='toggle' type='checkbox'" + checked + "></input>" + this.model.escape("description") + "<button id='delete'>Delete</button>");
+
+        return this;
+    }
 });
